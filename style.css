@@ -84,6 +84,7 @@ p { margin: 0; }
 
 .rules { display: grid; gap: 10px; margin: 18px 0 24px; padding: 0; list-style: none; }
 .rules li { background: var(--panel); border-radius: 8px; padding: 14px 16px; }
+.best { color: var(--muted); margin: -8px 0 18px; }
 label { display: block; font-weight: 600; margin-bottom: 6px; }
 input[type=text] {
   width: 100%; font: inherit; color: var(--ink); background: var(--bg);

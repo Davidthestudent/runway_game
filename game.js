@@ -5,6 +5,12 @@
   var state;
   var keys = {};   // active keyboard shortcuts for the current screen: { a: fn, b: fn, enter: fn }
 
+  // localStorage is optional: private mode or blocked storage must not break the game.
+  var store = {
+    get: function (k) { try { return localStorage.getItem('runway.' + k); } catch (e) { return null; } },
+    set: function (k, v) { try { localStorage.setItem('runway.' + k, v); } catch (e) { /* ignore */ } }
+  };
+
   document.addEventListener('keydown', function (e) {
     if (e.altKey || e.ctrlKey || e.metaKey) return;
     var tag = (e.target && e.target.tagName) || '';
@@ -60,7 +66,7 @@
   }
 
   function showStart() {
-    state = { round: 0, months: START, profitable: false, expanded: false, log: [], name: state ? state.name : '' };
+    state = { round: 0, months: START, profitable: false, expanded: false, log: [], name: state ? state.name : (store.get('name') || '') };
     app.textContent = '';
     app.appendChild(stripes());
     app.appendChild(el('h1', null, 'Runway'));
@@ -72,6 +78,8 @@
      'At zero months, your business is dead.',
      'Keyboard: A or B to choose, Enter to continue.'].forEach(function (t) { rules.appendChild(el('li', null, t)); });
     app.appendChild(rules);
+    var best = store.get('best');
+    if (best !== null) app.appendChild(el('p', 'best', 'Your best run so far: ' + months(Number(best)) + ' of cash left.'));
     var lab = el('label', null, 'Team name');
     lab.setAttribute('for', 'team');
     var input = el('input');
@@ -81,7 +89,7 @@
     app.appendChild(lab); app.appendChild(input);
     var go = el('button', 'btn', 'Start the game');
     go.type = 'button';
-    go.addEventListener('click', function () { state.name = input.value.trim(); showRound(); });
+    go.addEventListener('click', function () { state.name = input.value.trim(); store.set('name', state.name); showRound(); });
     input.addEventListener('keydown', function (e) { if (e.key === 'Enter') go.click(); });
     app.appendChild(go);
     keys = { enter: function () { go.click(); } };
@@ -162,10 +170,13 @@
       verdict = 'Barely alive';
       detail = 'You are still open, but one more surprise would finish you.';
     }
+    var prev = store.get('best');
+    var record = prev === null || state.months > Number(prev);
+    if (record) store.set('best', String(state.months));
     app.appendChild(el('h2', null, verdict));
     app.appendChild(el('p', 'final-num', String(state.months)));
     app.appendChild(el('p', 'final-unit', (state.months === 1 ? 'month' : 'months') + ' of cash left'));
-    app.appendChild(el('p', 'verdict', detail));
+    app.appendChild(el('p', 'verdict', detail + (record && prev !== null ? ' A new personal best.' : '')));
 
     var wrap = el('div', 'log-wrap');
     var table = el('table', 'log');
