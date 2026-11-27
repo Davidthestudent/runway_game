@@ -1,0 +1,11 @@
+{
+  "name": "runway-game",
+  "version": "1.0.0",
+  "description": "A 60-second browser game about startup cash runway",
+  "private": true,
+  "scripts": {
+    "test": "node --test",
+    "start": "python3 -m http.server 8000"
+  },
+  "license": "MIT"
+}
