@@ -41,6 +41,13 @@ p { margin: 0; }
 .stripes { display: grid; gap: 5px; margin: 0 0 18px; }
 .stripes i { display: block; height: 2px; background: var(--accent); }
 
+.theme {
+  float: right; margin: 4px 0 0 12px; padding: 6px 12px;
+  font: 600 13px/1.2 var(--body); text-transform: uppercase; letter-spacing: .06em;
+  color: var(--ink); background: transparent; border: 2px solid var(--ink); border-radius: 999px; cursor: pointer;
+}
+.theme:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
 /* The runway: months of cash as a strip that shortens and lengthens */
 .runway { margin: 0 0 22px; }
 .runway-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 8px; }

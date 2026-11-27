@@ -11,6 +11,29 @@
     set: function (k, v) { try { localStorage.setItem('runway.' + k, v); } catch (e) { /* ignore */ } }
   };
 
+  var saved = store.get('theme');
+  if (saved === 'dark' || saved === 'light') document.documentElement.setAttribute('data-theme', saved);
+
+  function themeToggle() {
+    var btn = el('button', 'theme');
+    btn.type = 'button';
+    var paint = function () {
+      var dark = document.documentElement.getAttribute('data-theme') === 'dark' ||
+        (!document.documentElement.getAttribute('data-theme') && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      btn.textContent = dark ? 'Light' : 'Dark';
+      btn.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
+      return dark;
+    };
+    btn.addEventListener('click', function () {
+      var next = paint() ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      store.set('theme', next);
+      paint();
+    });
+    paint();
+    return btn;
+  }
+
   document.addEventListener('keydown', function (e) {
     if (e.altKey || e.ctrlKey || e.metaKey) return;
     var tag = (e.target && e.target.tagName) || '';
@@ -83,6 +106,7 @@
     state = { round: 0, months: START, profitable: false, expanded: false, log: [], name: state ? state.name : (store.get('name') || '') };
     app.textContent = '';
     app.appendChild(stripes());
+    app.appendChild(themeToggle());
     app.appendChild(el('h1', null, 'Runway'));
     var intro = el('p', 'situation', 'You run a startup. Six decisions stand between you and a business that lasts.');
     app.appendChild(intro);
