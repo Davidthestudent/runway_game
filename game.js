@@ -3,6 +3,18 @@
 
   var app = document.getElementById('app');
   var state;
+  var keys = {};   // active keyboard shortcuts for the current screen: { a: fn, b: fn, enter: fn }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    var tag = (e.target && e.target.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+    var k = e.key.toLowerCase();
+    if (k === ' ') k = 'enter';
+    if (k === 'а') k = 'a';   // Cyrillic layouts share the key cap
+    if (k === 'и') k = 'b';
+    if (keys[k]) { e.preventDefault(); keys[k](); }
+  });
 
   function el(tag, cls, text) {
     var n = document.createElement(tag);
@@ -57,7 +69,8 @@
     var rules = el('ul', 'rules');
     ['You start with six months of cash. That is your runway.',
      'Good decisions add months. Bad decisions take them away.',
-     'At zero months, your business is dead.'].forEach(function (t) { rules.appendChild(el('li', null, t)); });
+     'At zero months, your business is dead.',
+     'Keyboard: A or B to choose, Enter to continue.'].forEach(function (t) { rules.appendChild(el('li', null, t)); });
     app.appendChild(rules);
     var lab = el('label', null, 'Team name');
     lab.setAttribute('for', 'team');
@@ -71,6 +84,7 @@
     go.addEventListener('click', function () { state.name = input.value.trim(); showRound(); });
     input.addEventListener('keydown', function (e) { if (e.key === 'Enter') go.click(); });
     app.appendChild(go);
+    keys = { enter: function () { go.click(); } };
     window.scrollTo(0, 0);
   }
 
@@ -98,6 +112,7 @@
     out.setAttribute('aria-live', 'polite');
     app.appendChild(out);
     paintRunway(state.months, false);
+    keys = { a: function () { buttons.a.click(); }, b: function () { buttons.b.click(); } };
     window.scrollTo(0, 0);
   }
 
@@ -125,6 +140,7 @@
       if (dead || last) { showEnd(dead); } else { state.round += 1; showRound(); }
     });
     out.appendChild(next);
+    keys = { enter: function () { next.click(); } };
     next.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   }
 
@@ -175,6 +191,7 @@
     again.type = 'button';
     again.addEventListener('click', showStart);
     app.appendChild(again);
+    keys = { enter: showStart };
     window.scrollTo(0, 0);
   }
 
