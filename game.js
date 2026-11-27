@@ -30,6 +30,20 @@
   }
   function months(n) { return n + (n === 1 ? ' month' : ' months'); }
   function signed(n) { return n > 0 ? '+' + n : n < 0 ? '\u2212' + Math.abs(n) : '0'; }
+  function copyText(text, done) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, function () { fallback(); });
+    } else { fallback(); }
+    function fallback() {
+      var ta = el('textarea'); ta.value = text; ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed'; ta.style.left = '-9999px';
+      document.body.appendChild(ta); ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      done(ok);
+    }
+  }
   function stripes() { var s = el('div', 'stripes'); s.setAttribute('aria-hidden', 'true'); s.appendChild(el('i')); s.appendChild(el('i')); s.appendChild(el('i')); return s; }
 
   function runway(roundLabel) {
@@ -197,6 +211,19 @@
     closing.appendChild(el('strong', null, 'Capital buys time, not demand'));
     closing.appendChild(el('p', null, 'Show this screen to the presenters.'));
     app.appendChild(closing);
+
+    var share = el('button', 'btn quiet share', 'Copy result');
+    share.type = 'button';
+    share.addEventListener('click', function () {
+      var lines = [(state.name ? state.name + ': ' : '') + verdict + ', ' + months(state.months) + ' of cash left'];
+      state.log.forEach(function (l, i) { lines.push((i + 1) + '. ' + l.title + ' \u2192 ' + l.choice + ' (' + signed(l.delta) + ')'); });
+      lines.push(location.href.split('#')[0]);
+      copyText(lines.join('\n'), function (ok) {
+        share.textContent = ok ? 'Copied' : 'Could not copy';
+        setTimeout(function () { share.textContent = 'Copy result'; }, 1800);
+      });
+    });
+    app.appendChild(share);
 
     var again = el('button', 'btn quiet', 'Play again');
     again.type = 'button';

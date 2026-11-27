@@ -81,6 +81,7 @@ p { margin: 0; }
   border: 0; border-radius: 8px; cursor: pointer;
 }
 .btn.quiet { background: transparent; color: var(--ink); border: 2px solid var(--ink); }
+.btn.share { margin-top: 12px; }
 
 .rules { display: grid; gap: 10px; margin: 18px 0 24px; padding: 0; list-style: none; }
 .rules li { background: var(--panel); border-radius: 8px; padding: 14px 16px; }
