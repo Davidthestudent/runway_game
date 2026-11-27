@@ -51,6 +51,20 @@
       lesson: 'Revenue growth and sustainable growth are different things.'
     },
     {
+      title: 'The first hire',
+      text: 'Sales are growing and you cannot handle every customer yourself. You can afford one more salary.',
+      a: { label: 'Hire an experienced sales lead', sub: 'Expensive, and ready to sell from day one.' },
+      b: { label: 'Hire a junior who can do a bit of everything', sub: 'Cheap, and needs you to train them.' },
+      play: function (pick, s) {
+        if (pick === 'a') {
+          if (s.profitable) return { delta: 1, text: 'Each sale earns money, so every deal the lead closes pays part of their salary. Within two months they pay for themselves.' };
+          return { delta: -2, text: 'They close deals fast. Every deal loses money, so a better salesperson only loses it faster.' };
+        }
+        return { delta: 0, text: 'Training eats your evenings and the junior makes mistakes, but the salary is small and you keep your cash.' };
+      },
+      lesson: 'Hire for speed only when the thing you are speeding up already works.'
+    },
+    {
       title: 'The big client',
       text: 'A large company wants to buy from you. It pays its invoices after 60 days. Your salaries and rent are due in 30.',
       a: { label: 'Stay with small customers who pay upfront', sub: 'Less impressive, but paid today.' },

@@ -41,14 +41,14 @@ test('play() never mutates anything but the documented flags', () => {
 });
 
 test('the careful path survives with cash to spare', () => {
-  // test MVP, interview, price for profit, small customers, decline investor, cut to core
-  const s = playAll(['b', 'a', 'b', 'a', 'b', 'a']);
+  // test MVP, interview, price for profit, experienced sales lead, small customers, decline investor, cut to core
+  const s = playAll(['b', 'a', 'b', 'a', 'a', 'b', 'a']);
   assert.ok(s.months >= 8, `expected a strong finish, got ${s.months}`);
 });
 
 test('the reckless path goes bankrupt before the shock is over', () => {
-  // build everything, survey, undercut, big client, take the money, wait it out
-  const s = playAll(['a', 'b', 'a', 'b', 'a', 'b']);
+  // build everything, survey, undercut, expensive sales lead, big client, take the money, wait it out
+  const s = playAll(['a', 'b', 'a', 'a', 'b', 'a', 'b']);
   assert.equal(s.months, 0);
 });
 
@@ -70,6 +70,13 @@ test('cutting back always saves exactly one month in the shock', () => {
       assert.equal(cut.delta - wait.delta, 1);
     }
   }
+});
+
+test('an expensive hire pays off only once sales are profitable', () => {
+  const hire = ROUNDS.find((r) => r.title === 'The first hire');
+  assert.ok(hire.play('a', { months: 6, profitable: true, expanded: false }).delta > 0);
+  assert.ok(hire.play('a', { months: 6, profitable: false, expanded: false }).delta < 0);
+  assert.equal(hire.play('b', { months: 6, profitable: false, expanded: false }).delta, 0);
 });
 
 test('the game is winnable and losable but not trivial', () => {

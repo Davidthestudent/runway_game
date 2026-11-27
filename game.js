@@ -108,7 +108,7 @@
     app.appendChild(stripes());
     app.appendChild(themeToggle());
     app.appendChild(el('h1', null, 'Runway'));
-    var intro = el('p', 'situation', 'You run a startup. Six decisions stand between you and a business that lasts.');
+    var intro = el('p', 'situation', 'You run a startup. ' + ROUNDS.length + ' decisions stand between you and a business that lasts.');
     app.appendChild(intro);
     var rules = el('ul', 'rules');
     ['You start with six months of cash. That is your runway.',
